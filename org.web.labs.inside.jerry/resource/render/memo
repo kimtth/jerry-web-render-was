@@ -1,0 +1,135 @@
+/* head {
+  display: none;
+} */
+
+
+package org.web.labs.inside.jerry.test;
+
+/**
+ * File: RandomImage.java
+ * 
+ * Description:
+ * Create a random color image.
+ * 
+ * @author Yusuf Shakeel
+ * Date: 01-04-2014 tue
+ */
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Random;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
+
+import javax.imageio.ImageIO;
+
+public class RandomImage {
+	public static void main(String args[]) throws IOException {
+		// image dimension
+		int width = 640;
+		int height = 320;
+		// create buffered image object img
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		// file object
+		File f = null;
+		// create random image pixel by pixel
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				int a = (int) (Math.random() * 256); // alpha
+				int r = (int) (Math.random() * 256); // red
+				int g = (int) (Math.random() * 256); // green
+				int b = (int) (Math.random() * 256); // blue
+
+				int p = (a << 24) | (r << 16) | (g << 8) | b; // pixel
+
+				img.setRGB(x, y, p);
+			}
+		}
+		// write image
+		try {
+			f = new File("C:\\Users\\fxY7006\\Desktop\\Output.png");
+			ImageIO.write(img, "png", f);
+		} catch (IOException e) {
+			System.out.println("Error: " + e);
+		}
+	}// main() ends here
+
+	// not work
+//	public static Image getImageFromArray(org.web.labs.inside.jerry.render.Color[] pixels, int width, int height) {
+//		int w = width;
+//		int h = height;
+//		int[] matrix = new int[w * h * 4];
+//
+//		for (int i = 0; i < pixels.length; ++i) {
+//			int r = pixels[i].r;
+//			int g = pixels[i].g;
+//			int b = pixels[i].b;
+//			int a = 1; // pixels[i].a;
+//
+//			int j = i * 4;
+//			matrix[j] = r;
+//			matrix[j + 1] = g;
+//			matrix[j + 2] = b;
+//			matrix[j + 3] = a;
+//		}
+//
+//		// https://stackoverflow.com/questions/25178810/create-a-writableraster-based-on-int-array
+//		DataBufferInt buffer = new DataBufferInt(matrix, matrix.length);
+//
+//		// ARGB (yes, ARGB, as the masks are R, G, B, A always) order
+//		int[] bandMasks = { 0xFF0000, 0xFF00, 0xFF, 0xFF000000 };
+//		WritableRaster raster = Raster.createPackedRaster(buffer, w, h, w, bandMasks, null);
+//		ColorModel cm = ColorModel.getRGBdefault();
+//		BufferedImage image = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), null);
+//
+//		try {
+//			ImageIO.write(image, "png", new FileOutputStream("C:\\Users\\fxY7006\\Desktop\\output.png"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return image;
+//	}
+
+	public static void test() {
+		ColorModel cm = ColorModel.getRGBdefault();
+		int w = 300;
+		int h = 200;
+		WritableRaster raster = cm.createCompatibleWritableRaster(w, h);
+		DataBufferInt buffer = (DataBufferInt) raster.getDataBuffer();
+		int[] bufferData = buffer.getData();
+		int[] array = new int[2400];
+		Random random = new Random();
+		for (int i = 0; i < 2400; i++) {
+			array[i] = random.nextInt(2);
+		}
+		System.arraycopy(array, 0, bufferData, 0,
+				(array.length < bufferData.length ? array.length : bufferData.length));
+		BufferedImage image = new BufferedImage(cm, raster, false, null);
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream("C:\\Users\\fxY7006\\Desktop\\output1.png");
+			ImageIO.write(image, "PNG", fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static byte[] extractBytes(String ImageName) throws IOException {
+		// open image
+		File imgPath = new File(ImageName);
+		BufferedImage bufferedImage = ImageIO.read(imgPath);
+
+		// get DataBufferBytes from Raster
+		WritableRaster raster = bufferedImage.getRaster();
+		DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
+
+		return (data.getData());
+	}
+}// class ends here
