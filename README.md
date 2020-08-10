@@ -16,7 +16,10 @@ especially when you are in a web-based system developer too.
 But sometimes we want to know about the inside.
 Not just admiring someone made.
 and try-something even small is better than nothing.
-</br>
+
+* Result of interpreting
+![preview](https://github.com/kimtth/jerryWeb/blob/master/org.web.labs.inside.jerry/src/jerry/test/rainbow.png?raw=true)
+
 # Simple Container
 A very simple way to implement.
 
