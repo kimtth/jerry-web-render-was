@@ -4,7 +4,7 @@ This is composited with two works.
 one is a toy web browser engine by java. another is a simple web application server.
 </br>
 ![web_render](https://user-images.githubusercontent.com/13846660/28877364-1db9bc8e-77d7-11e7-8370-f15f47072f0c.PNG)
-image from [limpet.net/mbrubeck](limpet.net/mbrubeck)</br>
+image from [https://limpet.net/mbrubeck](https://limpet.net/mbrubeck/2014/08/08/toy-layout-engine-1.html)</br>
 </br>
 The Toy web browser engine is influenced by limpet.net/mbrubeck's rust works.
 A simple web application server is referenced from other open-source code.
