@@ -1,0 +1,67 @@
+# Global OS/Editor
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+
+# VS Code
+.vscode/
+.history/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+/release/
+/out/
+/target/
+
+# Maven/Gradle
+.mvn/
+.settings/
+.classpath
+.project
+.gradle/
+build/
+**/build/
+**/.gradle/
+
+# Rust
+/target/
+Cargo.lock
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+.env*
+
+# Node (if any examples/scripts use it)
+node_modules/
+
+# Jupyter/Notebook (if generated)
+.ipynb_checkpoints/
+
+# Coverage/Testing
+coverage/
+.pytest_cache/
+
+# IDEs
+.idea/
+*.iml
+
+# Allow sample images in other locations
+!**/test/*.png
+!docs/*.png
+
+# Temporary
+tmp/
+.temp/
+/org.web.labs.inside.jerry/src/jerry/rust/target

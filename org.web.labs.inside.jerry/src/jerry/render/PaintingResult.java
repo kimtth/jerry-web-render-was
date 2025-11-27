@@ -9,7 +9,7 @@ class Canvas {
 
 	/// Create a blank canvas
 	public Canvas(Color[] pixels, int width, int height) {
-		Color white = new Color(255, 255, 255, 1);
+		Color white = new Color(255, 255, 255, 255);  // Alpha should be 255 (opaque)
 
 		this.pixels = pixels;
 		// create a Vec<T> by using the vec! macro:
@@ -116,7 +116,10 @@ public class PaintingResult {
 
 	private void render_background(ArrayList<DisplayCommand> list, LayoutBox layout_box) {
 		Color color = get_color(layout_box, "background");
-		list.add(new SolidColor(color, layout_box.dimensions.border_box()));
+		// Only add background if color is specified (matching Rust's Option.map behavior)
+		if (color != null) {
+			list.add(new SolidColor(color, layout_box.dimensions.border_box()));
+		}
 	}
 
 	private void render_borders(ArrayList<DisplayCommand> list, LayoutBox layout_box) {
@@ -148,23 +151,13 @@ public class PaintingResult {
 		Color color;
 		Object colval;
 
-		/*
-		 * for debugging
-		int a = (int)(Math.random()*256); //alpha
-        int r = (int)(Math.random()*256); //red
-        int g = (int)(Math.random()*256); //green
-        int b = (int)(Math.random()*256); //blue
-        Color defaultColor = new Color(a, r, g, b);
-        */
-        
-		Color defaultColor = new Color(255, 255, 255, 255);
-
+		// Return null if no color specified (matching Rust's Option<Color>)
 		if (boxtype instanceof BlockNode) {
 			colval = ((BlockNode) boxtype).stynode.value(name);
-			color = colval == null ? defaultColor : ((ColorValue) colval).color;
+			color = (colval instanceof ColorValue) ? ((ColorValue) colval).color : null;
 		} else if (boxtype instanceof InlineNode) {
-			colval =  ((InlineNode) boxtype).stynode.value(name);
-			color = colval == null ? defaultColor : ((ColorValue) colval).color;
+			colval = ((InlineNode) boxtype).stynode.value(name);
+			color = (colval instanceof ColorValue) ? ((ColorValue) colval).color : null;
 		} else if (boxtype instanceof AnonymousBlock) {
 			color = null;
 		} else {

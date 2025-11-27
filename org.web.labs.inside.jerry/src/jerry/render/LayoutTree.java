@@ -42,12 +42,13 @@ class Rect {
 	}
 
 	public Rect expanded_by(EdgeSizes edge) {
-		this.x = this.x - edge.left;
-		this.y = this.y - edge.top;
-		this.width = this.width + edge.left + edge.right;
-		this.height = this.height + edge.top + edge.bottom;
-
-		return new Rect(x, y, width, height);
+		// Return a new Rect without mutating the original
+		return new Rect(
+			this.x - edge.left,
+			this.y - edge.top,
+			this.width + edge.left + edge.right,
+			this.height + edge.top + edge.bottom
+		);
 	}
 }
 
@@ -298,11 +299,8 @@ class LayoutBox {
 		Dimensions d = this.dimensions;
 		for (LayoutBox child : this.children) {
 			child.layout(d);
-			// Increment the height so each child is laid out below the
-			// previous
-			// one.
-			this.dimensions.content.height = d.content.height + child.dimensions.margin_box().height;
-			System.out.println("layout_block_children(height): " + d.content.height);
+			// Increment the height so each child is laid out below the previous one.
+			d.content.height = d.content.height + child.dimensions.margin_box().height;
 		}
 	}
 
@@ -324,9 +322,17 @@ class LayoutBox {
 		// If we've just generated an anonymous block box, keep using it.
 		// Otherwise, create a new one.
 		if (this.box_type instanceof BlockNode) {
-			// LayoutBox last = this.children.get(this.children.size() - 1);
-			this.children.add(new LayoutBox(new AnonymousBlock()));
-			return this;
+			// Check if last child is an anonymous block
+			if (!this.children.isEmpty()) {
+				LayoutBox last = this.children.get(this.children.size() - 1);
+				if (last.box_type instanceof AnonymousBlock) {
+					return last;
+				}
+			}
+			// Create a new anonymous block and return it
+			LayoutBox anonymousBlock = new LayoutBox(new AnonymousBlock());
+			this.children.add(anonymousBlock);
+			return anonymousBlock;
 		} else if (this.box_type instanceof InlineNode) {
 			return this;
 		} else if (this.box_type instanceof AnonymousBlock) {
@@ -388,14 +394,15 @@ public class LayoutTree {
 		// Create the descendant boxes.
 		if (stylenode.children != null && stylenode.children.size() > 0) {
 			for (StyledNode child : stylenode.children) {
-				Display child_d = stylenode.display();
+				// Use child's display type, not parent's
+				Display child_d = child.display();
 
 				if (child_d instanceof Block) {
 					root_layout.children.add(build_layout_tree(child));
 				} else if (child_d instanceof Inline) {
 					root_layout.get_inline_container().children.add(build_layout_tree(child));
-				} else {
-					System.err.println("Root node has display: none.");
+				} else if (child_d instanceof None) {
+					// Don't lay out nodes with display: none
 				}
 			}
 		}
