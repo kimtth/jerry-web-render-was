@@ -39,23 +39,6 @@ The toy web browser engine is influenced by [limpet.net/mbrubeck's Rust works](h
 
 ![web_render](output/output_python_perf.png)
 
-## Project Structure
-
-```
-jerry-web-render-was/
-├── org.web.labs.inside.jerry/
-│   └── src/jerry/
-│       ├── render/          # Java rendering engine
-│       ├── rust/            # Rust rendering engine  
-│       ├── python/          # Python rendering engine
-│       ├── test/            # Test HTML/CSS files
-│       ├── nio/             # NIO HTTP Client/Server
-│       └── was/             # Web Application Server
-├── render_test.sh           # Test script (Linux/Mac)
-├── render_test.bat          # Test script (Windows)
-└── README.md
-```
-
 ## Web Browser Rendering Engine
 
 The rendering engine parses HTML and CSS, builds a style tree, calculates layout, and paints pixels to an image.
@@ -172,39 +155,6 @@ graph TD
     style SL fill:#ccf,stroke:#333
     style RH fill:#bbf,stroke:#333
     style CL fill:#fcf,stroke:#333
-```
-
-**Request Flow:**
-
-```mermaid
-flowchart TD
-    A[Client Request] --> B(Socket Listener<br/>Accept Connection);
-    B --> C(Thread Pool<br/>Execute Handler);
-    
-    subgraph Request_Handler_Flow[Request Handler Logic]
-        C --> D{Route Matching: Request Path};
-        
-        D -- /health or /servlets --> E1[Built-in JSON Response];
-        
-        D -- /servlet/name --> F1(Check Servlet Cache);
-        
-        F1 -- Found in Cache --> G1(IToy.doService<br/>Execute Servlet);
-        F1 -- Not Found --> G2[ClassLoader<br/>Load Servlet Class];
-        
-        G2 --> H1[Store in Servlet Cache];
-        H1 --> G1;
-        
-        D -- Other Paths --> I1[Static File Serving];
-    end
-    
-    E1 --> J(Prepare HttpResponse);
-    G1 --> J;
-    I1 --> J;
-    
-    J --> K[Send Response to Client];
-    
-    style G1 fill:#9f9,stroke:#333
-    style G2 fill:#f99,stroke:#333
 ```
 
 ### Container Hierarchy (Tomcat)
